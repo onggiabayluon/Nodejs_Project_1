@@ -1,0 +1,112 @@
+<div class="mt-4">
+    <div>
+        <h3>Khóa học đã xóa</h3>
+        <a href="/me/stored/courses"> Danh sách khóa học</a>
+    </div>
+    
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tên khóa học</th>
+                <th scope="col">Trình độ</th>
+                <th scope="col">VideoID</th>
+                <th scope="col">Thời gian xóa </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each courses}}
+            <tr>
+                                {{!-- mySum a + b --}}
+                <th scope="row">{{mySum @index 1}}</th>
+                <td>{{this.title}}</td>
+                <td>{{this.level}}</td>
+                <td>{{this.videoId}}</td>
+                <td>{{this.deletedAt}}</td>
+                <td>
+                    <a href="" class="btn btn-link btn-restore" data-id="{{this._id}}">Khôi phục</a>
+                    <a href="" class="btn btn-link" data-toggle="modal" data-id ="{{this._id}}"data-target="#delete-course-modal">
+                        Xóa vĩnh viễn</a>
+                </td>
+            </tr>
+
+            {{else}}
+            <tr>
+                <td colspan="5" class="text-center"> Thùng rác trống.                   
+                <a href="/me/stored/courses">Danh sách khóa học</a>
+                </td>
+            </tr>
+
+            {{/each }}
+        </tbody>
+    </table>
+    
+</div>
+
+    {{!-- Confirm delete course --}}
+    <div id="delete-course-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xóa khóa học !!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Hành động này không thể khôi phục lại dữ liệu.
+                    Bạn chắc chắn muốn xóa khóa học này ?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-delete-course" type="button" class="btn btn-danger">
+                    Xóa bỏ</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Hủy</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    {{!-- hidden form to delete or PATCH stuff --}}
+    <form name="hidden-form-delete" method="POST"></form>
+    <form name="hidden-form-restore" method="POST"></form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var courseId;
+            var hiddenFormDelete = document.forms['hidden-form-delete'];
+            var hiddenFormRestore = document.forms['hidden-form-restore'];
+            var btnDeleteCourse = document.getElementById('btn-delete-course');
+            var restoreBtn = $('.btn-restore');
+
+            // addEventListener để cho jquerry tải xong trên bộ nhớ trước
+            // đảm bảo các funtion sau đó k chạy trước
+            
+            //show cái modal ra
+            $('#delete-course-modal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); 
+                //bấm vào button lưu id vào courseId từ button-data bên trên
+                courseId = button.data('id');
+            })
+   
+            //Khi bấm vào nút xóa thì hiddenform action = "/courses/{{courseId}}/?_method=DELETE"
+            // sau khi chỉnh xong action thì hiddenFormDelete sẽ submit ra đường dẫn bên trên
+            // từ phần route: thư mục index: /course --> delete / :id --> .destroy(controller)
+            btnDeleteCourse.onclick = function() {
+                hiddenFormDelete.action ='/courses/' + courseId + '/force?_method=DELETE';
+                hiddenFormDelete.submit();
+            }
+
+            //restore
+            restoreBtn.click(function(event) {
+                event.preventDefault();
+                //Bấm nút 'khôi phục' lấy được id
+                var courseRestoreId = $(this).data('id');
+                //submit lên action bằng route dưới truyền vào controller khớp phương thức PATCH
+                //rồi thực hiện hàm restore
+                hiddenFormRestore.action ='/courses/' + courseRestoreId + '/restore?_method=PATCH';
+                hiddenFormRestore.submit();
+            });
+
+        });
+    </script>
