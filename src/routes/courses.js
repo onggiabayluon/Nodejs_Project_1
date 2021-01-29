@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-// var multer  = require('multer');
-// var upload = multer({ dest: 'uploads/' });
+
 
 const courseController = require('../app/controllers/CourseController');
 
@@ -9,11 +8,8 @@ const courseController = require('../app/controllers/CourseController');
 //:slug là route kế tiếp /news/details
 
 router.get('/create', courseController.renderCreate);
-router.get('/render-upload', courseController.renderUpload);
 //them
 router.post('/store', courseController.store);
-//upload photos
-router.post('/upload', courseController.uploadphotos);
 //
 router.post('/handle-form-action', courseController.handleFormAction);
 router.get('/:id/edit', courseController.edit);
