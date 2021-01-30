@@ -23,13 +23,40 @@
         </div>
         
         {{!-- <div class="form-group">
-            <!-- UPLOAD MULTIPLE FILES -->
-            <form action="/uploadmultiple"  enctype="multipart/form-data" method="POST">
-                Select images: <input type="file" name="myFiles" multiple>
-                <input type="submit" value="Upload your files"/>
-            </form>
+          <input type="file" name="multi-files" multiple id="input-files" class="form-control-file border" />
         </div> --}}
     
         <button type="submit" class="btn btn-primary">Thêm khóa học</button>
     </form>
+
+    {{!-- <div class="row">
+        <div class="col-sm-12">
+            <div class="preview-images"></div>
+        </div>
+    </div> --}}
+
 </div>
+
+{{!-- <script>
+     document.addEventListener('DOMContentLoaded', function() {
+         $(document).ready(function () {
+            let imagesPreview = function (input, placeToInsertImagePreview) {
+                if (input.files) {
+                    let filesAmount = input.files.length;
+                    for (i = 0; i < filesAmount; i++) {
+                        let reader = new FileReader();
+                        reader.onload = function (event) {
+                            $($.parseHTML("<img>"))
+                                .attr("src", event.target.result)
+                                .appendTo(placeToInsertImagePreview);
+                        };
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+            };
+            $("#input-files").on("change", function () {
+                imagesPreview(this, "div.preview-images");
+            });
+        });
+     });
+</script> --}}
