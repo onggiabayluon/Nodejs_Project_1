@@ -12,11 +12,15 @@ const Course = new Schema({
     videoId: { type: String },
     level: { type: String },
     thumbnail: { type: String },
+<<<<<<< Updated upstream
     finalImg: { 
       contentType: String,
       data: Buffer,
     },
     slug: { type: String, slug: 'title', unique: true }
+=======
+    slug: { type: String, unique: true }
+>>>>>>> Stashed changes
   }, {
     timestamps: true,
   });
