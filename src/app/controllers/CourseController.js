@@ -109,8 +109,8 @@ class CourseController {
     var newSlug = removeVietnameseTones(newtitle) 
     Course.findById(req.params.id, function(err, page) {
       if (newtitle !== page.title) {
-        // TH1: đã có slug: khoa-hoc-dinh-cap || slug muốn chỉnh tên lại: khoa-hoc-dinh, TH này thay tên slug cũ = slug mới
-        // TH2: đã có slug: khoa-hoc-dinh cap || slug cũ:khoa-hoc-dinh, slug muốn thêm vào tên: khoa-hoc-dinh-cap (trùng tên slug), TH này +shortid
+        // TH1: slug hiện tại:khoa-hoc-dinh-cap, muốn chỉnh tên lại: khoa-hoc-dinh, TH này thay tên slug cũ = slug mới
+        // TH2: đã có slug này trong mongodb: khoa-hoc-dinh-cap || slug hiện tại:khoa-hoc-dinh, muốn chỉnh tên lại: khoa-hoc-dinh-cap (trùng tên slug), TH này +shortid
         // Nếu title mới khác title cũ thì update lại luôn cả slug
         // check slug mới có trùng slug mongodb thì add shortId vào slug mới
         // newSlug = khoa-hoc-dinh-cao || page.slug = khoa-hoc-dinh
