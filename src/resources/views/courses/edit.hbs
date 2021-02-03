@@ -1,29 +1,54 @@
 <div class="mt-4">
-    <h3> Cập nhật khóa học </h3>
+    <div class="row">
 
-    <form class="mt-4" method="POST" action="/courses/{{courseEdit._id}}?_method=PUT ">
-        <div class="form-group">
-            <label for="title"> Tên khóa học</label>
-            <input type="text" class="form-control" value="{{courseEdit.title}}" id="title" name="title">
+        {{!-- ảnh bìa (thumbnail) --}}
+        <div class="col-lg-3">
+            <img src="https://res.cloudinary.com/dwajvm53v/image/upload/v1612253974/home/hrb8iwjjzcmrj9b9igat.jpg"
+                alt="img" width="100%" height="auto">
+            <a class="btn btn-success mt-2 btn-block" href="#" role="button">Theo dõi</a>
+            <p class="text-center"> <small> Có 94 người đang theo dõi </small></p>
         </div>
-        
-        <div class="form-group">
-            <label for="description"> Mô tả </label>
-            <textarea class="form-control" id="description" name="description">{{courseEdit.description}}
-            </textarea>
-        </div>
-        
-        <div class="form-group">
-            <label for="videoId"> Video ID </label>
-            <input type="text" class="form-control" value="{{courseEdit.videoId}}" id="videoId" name="videoId">
-        </div>
-        
-        <div class="form-group">
-            <label for="level"> Trình độ </label>
-            <input type="text" class="form-control" value="{{courseEdit.level}}" id="level" name="level">
-        </div>
-        
+        {{!-- Mô tả (Description) --}}
+        <div class="col-lg-9">
+             <div class="row">
+                <a class="btn btn-info mt-2" href="/courses/{{courseEdit.slug}}" role="button">Quay lại</a>
+            </div>
+            {{!-- row 1 col 2 --}}
+            <div class="row-1-col-2">
+                <div class="row ">
+                    <h3> {{ course.title }} </h3>
+                </div>
+                <div class="row">
+                    <div class="col-lg-9">
+                        <form class="mt-4" method="POST" action="/courses/{{courseEdit._id}}?_method=PUT ">
+                            <div class="form-group">
+                                <label for="title"> Tên truyện </label>
+                                <input type="text" class="form-control" value="{{courseEdit.title}}" id="title" name="title">
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="videoId"> tên khác </label>
+                                <input type="text" class="form-control" value="" id="videoId" name="videoId">
+                            </div>                     
+                        
+                            <div class="form-group">
+                                <label for="level"> Thể loại </label>
+                                <input type="text" class="form-control" value="" id="level" name="level">
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="description"> Mô tả </label>
+                                <textarea class="form-control" id="description" name="description">{{courseEdit.description}}</textarea>
+                            </div>                           
+                        
+                            <button type="submit" class="btn btn-primary">Lưu lại</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{!-- /row 1 col 2 --}}
 
-        <button type="submit" class="btn btn-primary">Lưu lại</button>
-    </form>
-</div>
+           
+        </div>
+
+       

@@ -27,6 +27,7 @@ let storage = multer.diskStorage({
 
     // Tên của file thì mình nối thêm một cái nhãn thời gian để tránh bị trùng tên file.
     let filename = `${Date.now()}-trungquandev-${file.originalname}`;
+  
     callback(null, filename);
   }
 });

@@ -1,8 +1,8 @@
 <form name="container-form" method="POST" action="/courses/handle-form-action" 
 class="mt-4">
     <div>
-        <h3>Khóa học của tôi</h3>
-        <a href="/me/trash/courses"> Thùng rác ({{deletedCount}})</a>
+        <h3>Truyện tranh của tôi</h3>
+        <a href="/me/trash/truyen-tranh"> Thùng rác ({{deletedCount}})</a>
 
         <div class="mt-4 d-flex align-items-center">
             <div class="custom-control custom-checkbox">
@@ -28,42 +28,48 @@ class="mt-4">
         <thead>
             <tr>
                 <th scope="col"  colspan="2">#</th>
-                <th scope="col">Tên khóa học</th>
-                <th scope="col">Trình độ</th>
+                <th scope="col">Tên truyện</th>
+                <th scope="col">Chapter</th>
                 <th scope="col">VideoID</th>
                 <th scope="col">Thời gian tạo</th>
             </tr>
         </thead>
         <tbody>
             {{#each courses}}
+            
             <tr>
-
-                <td>
-                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" name="courseIds[]" 
-                        value="{{this._id}}">
-                    </div>
-                </td>
-
+                    <td>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="courseIds[]" 
+                            value="{{this._id}}">
+                        </div>
+                    </td>
                                 {{!-- mySum a + b --}}
-                <th scope="row">{{mySum @index 1}}</th>
-                <td>
-                    <a href="/courses/{{this.slug}}"> {{this.title}} </a>
-                </td>
-                <td>{{this.level}}</td>
-                <td>{{this.videoId}}</td>
-                <td>{{this.createdAt}}</td>
-                <td>
-                    <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
-                    <a href="#" class="btn btn-link" data-toggle="modal" data-id ="{{this._id}}"data-target="#delete-course-modal">
-                        Xóa</a>
-                </td>
+                    <th scope="row">{{mySum @index 1}}</th>
+                    {{!--   tên truyện      --}}
+               
+                    <td> <a href="/courses/{{this.slug}}"> {{this.title}} </a> </td>
+                    {{!--   chapter       --}}
+                    <td><select class="custom-select" id="inputGroupSelect01">
+                            <option selected>Chọn tập...</option>
+                            <option value="1">One</option>
+                        </select></td>
+                    {{!--   videoId         --}}
+                    <td>{{this.videoId}}</td>
+                    {{!--   thời gian tạo   --}}
+                    <td>{{this.createdAt}}</td>
+                    {{!--   Sửa và xóa      --}}
+                    <td>
+                        <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
+                        <a href="#" class="btn btn-link" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-course-modal">
+                            Xóa</a>
+                    </td>
             </tr>
 
             {{else}}
             <tr>
-                <td colspan="5" class="text-center"> Bạn chưa đăng khóa học nào.                   
-                <a href="/courses/create">Đăng khóa học</a>
+                <td colspan="5" class="text-center"> Bạn chưa đăng truyện nào hết!!                   
+                <a href="/courses/create">Đăng truyện tại đây</a>
                 </td>
             </tr>
 

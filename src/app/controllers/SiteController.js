@@ -15,9 +15,10 @@ class SiteController {
        
         //render courses vao homepage
         //2.
-        Course.find({})
+        Course.find({ chaptername: { $not: { $exists: true } } })
+        .select('title description thumbnail slug')
         //3. 
-        .then(courses => { //4.
+        .then(courses => { //4.           
             res.render('home', { 
                 courses: multiMongooseToObject(courses)
              });

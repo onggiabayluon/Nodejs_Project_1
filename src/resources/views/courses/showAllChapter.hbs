@@ -1,0 +1,185 @@
+<div class="mt-4">
+    <div class="row">
+        
+        {{!-- ảnh bìa (thumbnail) --}}
+        <div class="col-lg-3">
+            <img src="https://res.cloudinary.com/dwajvm53v/image/upload/v1612253974/home/hrb8iwjjzcmrj9b9igat.jpg" alt="img" width="100%" height="auto">
+            <a class="btn btn-success mt-2 btn-block" href="#" role="button">Theo dõi</a>
+            <p class="text-center"> <small> Có 94 người đang theo dõi </small></p>
+        </div>
+        {{!-- Mô tả (Description) --}}
+        <div class="col-lg-9" >
+            <div class="row">
+                <button class="btn btn-outline-danger dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">Thêm chapter mới</button>
+                <div class="dropdown-menu">
+                    <a id="dropdown-form-btn" class="dropdown-item " href="#">Tạo chapter</a>
+                    {{#each (limit course 1)}}
+                    <a class="dropdown-item" href="/courses/{{this._id}}/edit" class="btn btn-link">
+                    Chỉnh sửa nội dung</a>
+                    {{/each}}
+                </div>
+            </div>
+
+            {{!--           form             --}}
+            <div id="dropdown-form" class="d-none">
+               {{#each (limit course 1)}}       
+                        <form action="/courses/{{this.slug}}/multiple-upload" method="POST" enctype="multipart/form-data"> 
+                {{/each}}
+                    <div class="form-group">
+                        <label for="chapter"> Thêm Chapter</label>
+                        <select class="custom-select" id="chapter" name="chapter">
+                            <option>Chapter cần thêm...</option>
+                            <option value="chapter-1">1</option>
+                            <option value="chapter-2">2</option>
+                            <option value="chapter-3">3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="example-input-file"> </label>
+                        <input type="file" name="many-files" multiple id="input-many-files" class="form-control-file border">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo ngay</button>
+                </form>
+                
+            </div>
+            {{!--           /form            --}}
+
+            
+            {{!-- row 1 col 2 --}}
+            <div class="row-1-col-2">
+                <div class="row ">
+                    {{#each (limit course 1)}}   
+                        {{#if this.title}}
+                            <h3> {{ this.title }} </h3>
+                        {{/if}}
+                    {{/each}}
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <p><strong> Tên khác: </strong> </p>
+                        <p><strong> Tác Giả: </strong> </p>
+                        <p><strong> Thể loại: </strong> </p>
+                        <p><strong> Nội dung: </strong> </p>
+                    </div>
+                    <div class="col-lg-7">
+                        <p> Đang cập nhật </p>
+                        <p> Pháp sư của Anesia </p>
+                        <p> Action, Fantasy, Manhwa (Tag Type) </p>
+                        {{#each (limit course 1)}}   
+                        <p> {{this.description}} </p>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+            {{!-- /row 1 col 2 --}}
+        </div>
+
+        <div class="col-lg-3 ">
+            <div id="preview-truyentranh" class="row justify-content-center text-danger d-none">
+                <p>Xem trước ảnh</p>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="preview-images "></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            {{#each (limit course 1)}}
+                <p> <strong> Chapter {{this.title}} </strong></p>
+            {{/each}}
+            <div class="row">
+                <div class="col-lg">
+                    <a class="btn btn-success mr-2 btn-block" href="#" role="button">Đọc từ đầu <br> Tập 1</a>
+                </div>
+                <div class="col-lg">
+                    <a class="btn btn-success mr-2 btn-block" href="#" role="button">Đọc mới nhất <br> Tập 100</a>
+                </div>
+            </div>
+            {{!--  Search place     --}}
+            <form class="form-inline">
+                <input class="form-control m-2" type="search" placeholder="Search" aria-label="Search" style="width: 100%;">
+            </form>
+            {{!--  Danh sách chương --}}
+            <div class="danh-sach-chuong">
+                <div class="row m-2">
+                    <div class="col text-center"> Số chương </div>
+                    <div class="col text-center"> Cập nhật </div>
+                    <div class="col text-center"> Lượt xem </div>
+                </div>
+                {{#each course}}
+                {{#if this.chapter}}
+                    <div class="row m-2">
+                        <div class="col text-center"> <a href="/courses/{{this.chaptername}}/{{this.chapter}}"> {{this.chapter}} </a> </div>
+                        <div class="col text-center">
+                            <p> 1 giờ trước </p>
+                        </div>
+                        <div class="col text-center">
+                            <p> 8,233 </p>
+                        </div>
+                    </div>
+                {{/if}}
+                {{/each}}
+            
+        </div>
+        {{!-- <div class="col-lg-9">
+            <h3> {{ course.title }} </h3>
+            {{#if course.videoId}}
+                 <iframe width="560" height="315" src="https://www.youtube.com/embed/{{course.videoId}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            {{/if}}    
+            <p> {{course.description}} </p>
+        </div> --}}
+        
+    </div>
+
+    {{!-- <div class="row">
+        <div class="container">
+            {{#each course.image}}
+
+            <img class="rounded mx-auto d-block" src="{{this.url}}" alt="img" width="100%" height="auto" style="background-size: cover;">
+                       
+            {{/each}}
+        </div>
+    </div> --}}
+
+</div>
+
+<script>
+     document.addEventListener('DOMContentLoaded', function() { 
+         var dropdownFormButton = document.getElementById('dropdown-form-btn');
+         var dropdownForm = $('#dropdown-form');
+         var row1col2 = $('.row-1-col-2');
+         {{!-- console.log(dropdownForm)
+         console.log(dropdownFormButton) --}}
+         
+         dropdownFormButton.onclick = function() {
+             dropdownForm.toggleClass("d-none");
+             row1col2.toggleClass("d-none");
+             $( "#preview-truyentranh" )
+            .toggleClass("d-none");
+        }
+       
+       let imagesPreview = function (input, placeToInsertImagePreview) {
+                if (input.files) {
+                    let filesAmount = input.files.length;
+                    for (i = 0; i < filesAmount; i++) {
+                        let reader = new FileReader();
+                        reader.onload = function (event) {
+                            $($.parseHTML("<img>"))
+                                .addClass("rounded mx-auto d-block")
+                                .css({ "width":"50%", "height":"auto", "background-size":"cover" })
+                                .attr("src", event.target.result)
+                                .appendTo(placeToInsertImagePreview);
+                        };
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+            };
+            $("#input-many-files").on("change", function () {
+                imagesPreview(this, "div.preview-images");
+            });
+
+        });
+</script>
+

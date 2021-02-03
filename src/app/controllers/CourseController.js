@@ -7,37 +7,39 @@ const   removeVietnameseTones                           = require('../../config/
 class CourseController {
 
   // [GET] / courses / :slug
-  show(req, res, next) {
+  showAllChapter(req, res, next) {
     //req.params.slug VD: courses/abc 
     //findOne: tìm đến 1 field trong mongodb ở đây là field slug
     //  courses/nodejs
-    Course.findOne({ slug: req.params.slug })
-      .then(course => {
-        if (course) {
-          res.status(200).render('courses/show', { course: singleMongooseToObject(course) })
-        } else {
-          res
-            .status(404)
-            .json({ message: "No valid entry found for provided ID" });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        res.status(500).json({
-          error: err
+    Course.find({$or: [{"chaptername": req.params.slug}, {"slug": req.params.slug}]})
+        .select('title slug createdAt updatedAt description thumbnail chaptername chapter')
+        .then(course => {
+          //res.json(course)
+          if (course) {
+            res.status(200).render('courses/showAllChapter', { course: multiMongooseToObject(course) })
+          } else {
+            res
+              .status(404)
+              .json({ message: "No valid entry found for provided ID" });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).json({
+            error: err
+          });
         });
-      });
-  }
+      }
 
-   // [GET] / courses / :slug
-  show(req, res, next) {
+   // [GET] / courses / :slug / :chapter-x
+  showSingleChapter(req, res, next) {
     //req.params.slug VD: courses/abc 
     //findOne: tìm đến 1 field trong mongodb ở đây là field slug
     //  courses/nodejs
-    Course.findOne({ slug: req.params.slug })
+    Course.findOne({ chapter: req.params.chapter })
       .then(course => {
         if (course) {
-        res.status(200).render('courses/show', { course: singleMongooseToObject(course) })
+        res.status(200).render('courses/showSingleChapter', { course: singleMongooseToObject(course) })
       
         } else {
           res
@@ -64,9 +66,9 @@ class CourseController {
     res.status(200).render('courses/upload');
   }
 
-  // [POST] / courses / store || post dữ liệu lên stored:đăng khóa học
+  // [POST] / courses / createTruyen || post dữ liệu lên stored:đăng khóa học
   // post dữ liệu lên mongodb, ở me / stored / courses thì render ra 
-  store(req, res, next) {
+  createTruyen(req, res, next) {
     //req.body: là tài nguyên form người dùng nhập vào
     //lấy thumbnail ảnh qua video id youtube
 
@@ -76,7 +78,6 @@ class CourseController {
     //Chuyển title[tiếng việt] sang slug 
     var title = req.body.title;
     var slug = removeVietnameseTones(title)
-
     //tra cái slug này xem có cái page nào k
     Course.findOne({ slug: slug }, function(err, page) {
       if(page) {
@@ -86,7 +87,7 @@ class CourseController {
         course.slug = slug + '-' + shortid.generate();
         course.save()
         .then(() => {
-          res.status(201).redirect('/me/stored/courses');
+          res.status(201).redirect('/me/stored/truyen-tranh');
         })
         .catch(err => {
           console.log(err);
@@ -102,7 +103,7 @@ class CourseController {
         //save xong rồi redirect qua trang chủ
         course.save()
         .then(() => {
-          res.status(201).redirect('/me/stored/courses');
+          res.status(201).redirect('/me/stored/truyen-tranh');
         })
         .catch(err => {
           console.log(err);
@@ -128,6 +129,8 @@ class CourseController {
         });
       });
   }
+
+  
   //Phương thức [PUT]:để chỉnh sửa nhưng chưa hỗ trợ nên sử dụng [PUT]
   //sẽ bị chuyển thành [GET] nên h phải dùng middleware setup bên file index.js
   // [PUT] / courses / :id 
@@ -155,7 +158,7 @@ class CourseController {
             req.body.slug = newSlug + '-' + shortid.generate();
             Course.updateOne({ _id: req.params.id }, req.body)
               .then(() => {
-                res.status(200).redirect('/me/stored/courses');
+                res.status(200).redirect('/me/stored/truyen-tranh');
               })
               .catch(err => {
                 console.log(err);
@@ -168,7 +171,7 @@ class CourseController {
             req.body.slug = newSlug;
             Course.updateOne({ _id: req.params.id }, req.body)
               .then(() => {
-                res.status(200).redirect('/me/stored/courses');
+                res.status(200).redirect('/me/stored/truyen-tranh');
               })
               .catch(err => {
                 console.log(err);
@@ -182,7 +185,7 @@ class CourseController {
         // Nếu title mới giống title cũ thì update bình thường, không update slug
         Course.updateOne({ _id: req.params.id }, req.body)
         .then(() => {
-          res.status(200).redirect('/me/stored/courses');
+          res.status(200).redirect('/me/stored/truyen-tranh');
         })
         .catch(err => {
           console.log(err);

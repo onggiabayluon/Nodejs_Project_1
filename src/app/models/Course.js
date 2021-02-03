@@ -5,7 +5,9 @@ const slug = require('mongoose-slug-generator');
 const mongooseDelete = require('mongoose-delete');
 
 const Course = new Schema({
-    title: { type: String, required: true },
+    title: { type: String },
+   
+    chaptername: { type: String},
     chapter: { type: String, unique: true },
     description: { type: String },
     videoId: { type: String },

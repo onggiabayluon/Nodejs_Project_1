@@ -10,7 +10,7 @@ class multipleUploadController {
  * Created by trungquandev.com's author on 17/08/2019.
  * multipleUploadController.js
  */
-
+    // [POST] / :slug / multipleUpload
     multipleUpload = async (req, res) => {
         try {
             // thực hiện upload
@@ -26,21 +26,28 @@ class multipleUploadController {
 
             // trả về cho người dùng cái thông báo đơn giản.
             // const files = req.files;
-            console.log('title: ' + req.body.title);
-            console.log('chapter: ' + req.body.chapter);
+           
             let res_promises = req.files.map(file => new Promise((resolve, reject) => {
                 cloudinary.uploadMultiple(file.path).then(function(result) {
                     resolve(result);
                 })
             }))
 
-        
+            
             // Promise.all get imgas
             Promise.all(res_promises)
                 .then(async(arrImg) => {
-                    const course = new Course();
-                    course.title = 'test' + '-' + shortid.generate();
-                    course.slug = 'test' + '-' + shortid.generate();
+                    const course = new Course(req.body);
+                    course.title = 'chapter of ' + req.params.slug
+                    course.slug = req.params.slug + '-' + shortid();
+                    course.chaptername = req.params.slug
+
+                    //course.chapter = req.body.chapter.removeVnmese......
+
+                    console.log('title: ' +  course.title);
+                    console.log('chaptername: ' +  course.chaptername);
+                    console.log('chapter: ' + req.body.chapter);
+
                     let Img = arrImg.map(img => { 
                         course.image.push({
                             url: img.url
@@ -87,7 +94,7 @@ class multipleUploadController {
             // }
 
             //res.send(`Your files has been uploaded.`)
-            res.status(201).redirect('/me/stored/courses');
+            res.status(201).redirect('/me/stored/truyen-tranh');
             
         } catch (error) {
             // Nếu có lỗi thì debug lỗi xem là gì ở đây

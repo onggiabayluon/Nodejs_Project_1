@@ -43,7 +43,11 @@ app.engine(
         extname: '.hbs',
         //Hàm tự thêm vào nhờ express handlebars
         helpers: {
-            mySum: (a, b) =>  a + b
+            mySum: (a, b) =>  a + b,
+            limit: (arr, limit) => {
+                if (!Array.isArray(arr)) { return []; }
+                return arr.slice(0, limit);
+            },
         }
     }),
 );

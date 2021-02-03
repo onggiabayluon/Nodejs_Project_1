@@ -10,13 +10,13 @@ const multipleUploadController  = require('../app/controllers/multipleUploadCont
 
 router.get('/create', courseController.renderCreate);
 //them
-router.post('/store', courseController.store);
+router.post('/createTruyen', courseController.createTruyen);
 //
 router.post('/handle-form-action', courseController.handleFormAction);
 router.get('/:id/edit', courseController.edit);
 //upload ảnh
 router.get('/upload', courseController.renderUpload);
-router.post('/multiple-upload', multipleUploadController.multipleUpload);
+router.post('/:slug/multiple-upload', multipleUploadController.multipleUpload);
 //[PUT]: chỉnh sửa lên chính cái id 
 router.put('/:id', courseController.update);
 //sửa_restore
@@ -24,8 +24,10 @@ router.patch('/:id/restore', courseController.restore);
 //xoa
 router.delete('/:id', courseController.destroy);
 router.delete('/:id/force', courseController.forceDestroy);
-router.get('/:slug', courseController.show);
-
+//
+router.get('/:slug', courseController.showAllChapter);
+router.get('/:slug/:chapter', courseController.showSingleChapter);
+//router.get('/:slug', courseController.showSingleChapter);
 
 
 module.exports = router;
