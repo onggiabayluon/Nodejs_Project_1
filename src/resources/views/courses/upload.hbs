@@ -1,46 +1,44 @@
 <div class="mt-4">
-    <h3> Đăng khóa học </h3>
+    <h3> Đăng ảnh </h3>
 
-    <form method="POST" action="/courses/store">
+    <form action="/courses/multiple-upload" method="POST" enctype="multipart/form-data">
+
         <div class="form-group">
             <label for="title"> Tên khóa học</label>
             <input type="text" class="form-control" id="title" name="title">
         </div>
-        
-        <div class="form-group">
-            <label for="description"> Mô tả </label>
-            <input type="text" class="form-control" id="description" name="description">
-        </div>
-        
-        <div class="form-group">
-            <label for="videoId"> Video ID </label>
-            <input type="text" class="form-control" id="videoId" name="videoId">
-        </div>
-        
-        <div class="form-group">
-            <label for="level"> Trình độ </label>
-            <input type="text" class="form-control" id="level" name="level">
-        </div>
-        
-        {{!-- <div class="form-group">
-          <input type="file" name="multi-files" multiple id="input-files" class="form-control-file border" />
-        </div> --}}
 
-        <button  type="submit" class="btn btn-primary">Thêm khóa học</button>
+         <div class="form-group">
+            <label for="chapter"> Chapter</label>
+            <select class="custom-select" id="chapter" name="chapter">
+                <option selected>Choose...</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="example-input-file"> </label>
+            <input type="file" name="many-files" multiple id="input-many-files" class="form-control-file border">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+
     </form>
 
-    {{!-- <div class="row">
+    <div class="row">
         <div class="col-sm-12">
-            <div class="preview-images"></div>
+            <div class="preview-images " ></div>
         </div>
-    </div> --}}
+    </div>
 
 </div>
 
-{{!-- <script>
-     document.addEventListener('DOMContentLoaded', function() {
-         $(document).ready(function () {
-            
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $(document).ready(function () {
+
 
             let imagesPreview = function (input, placeToInsertImagePreview) {
                 if (input.files) {
@@ -49,6 +47,8 @@
                         let reader = new FileReader();
                         reader.onload = function (event) {
                             $($.parseHTML("<img>"))
+                                .addClass("rounded mx-auto d-block")
+                                .css({ "width":"100%", "height":"auto", "background-size":"cover" })
                                 .attr("src", event.target.result)
                                 .appendTo(placeToInsertImagePreview);
                         };
@@ -60,7 +60,6 @@
                 imagesPreview(this, "div.preview-images");
             });
 
-           
         });
-     });
-</script> --}}
+    });
+</script>

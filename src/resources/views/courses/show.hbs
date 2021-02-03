@@ -1,13 +1,26 @@
 <div class="mt-4">
     <div class="row">
+        
         <div class="col-lg-3">
-            <button> học ngay </button>
+            <button class="btn btn-success" > học ngay </button>
         </div>
         <div class="col-lg-9">
-            {{ course.title }}
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{course.videoId}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            <p>{{course.description}}</p>
+            <h3> {{ course.title }} </h3>
+            {{#if course.videoId}}
+                 <iframe width="560" height="315" src="https://www.youtube.com/embed/{{course.videoId}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            {{/if}}    
+            <p> {{course.description}} </p>
         </div>
         
+    </div>
+
+    <div class="row">
+        <div class="container">
+            {{#each course.image}}
+
+            <img class="rounded mx-auto d-block" src="{{this.url}}" alt="img" width="100%" height="auto" style="background-size: cover;">
+                       
+            {{/each}}
+        </div>
     </div>
 </div>

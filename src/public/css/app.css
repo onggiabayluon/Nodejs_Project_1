@@ -10,3 +10,6 @@
 .checkbox-select-all-options {
   width: 145px;
   margin: 0 10px; }
+
+div.preview-images > img {
+  width: 30%; }

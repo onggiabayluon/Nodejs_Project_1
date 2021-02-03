@@ -47,7 +47,9 @@ class="mt-4">
 
                                 {{!-- mySum a + b --}}
                 <th scope="row">{{mySum @index 1}}</th>
-                <td>{{this.title}}</td>
+                <td>
+                    <a href="/courses/{{this.slug}}"> {{this.title}} </a>
+                </td>
                 <td>{{this.level}}</td>
                 <td>{{this.videoId}}</td>
                 <td>{{this.createdAt}}</td>

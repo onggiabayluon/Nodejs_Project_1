@@ -1,6 +1,3 @@
-
-//
-const multer = require('multer');
 //
 const path = require('path');
 const express = require('express');
@@ -19,32 +16,6 @@ db.connect();
 
 const app = express();
 const port = 3000;
-
-// //set storage engine
-// const storage = multer.diskStorage({
-//     destination: './src/public/img',
-//     filename: function (req, file, cb) {
-//         cb(null, file.fieldname + '-' + Date.now() + Path.extname(file.originalname));
-//     }
-// });
-//Init upload
-// module.exports = () => {
-//     upload = multer({
-//         storage: storage
-//     }).single('myImage');
-// }
-// app.post('/courses/upload', (req, res) => {
-//     upload(req, res, (err) => {
-//             if (err) {
-//                 res.render('courses/upload', {
-//                     msg: err
-//                 });
-//             } else {
-//                 console.log(req.file);
-//                 res.send('test');
-//             }
-//         });  
-// })
 
 //
 app.use(express.static(path.join(__dirname, 'public')));
