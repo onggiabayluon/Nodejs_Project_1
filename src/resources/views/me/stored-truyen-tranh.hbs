@@ -1,79 +1,86 @@
 <form name="container-form" method="POST" action="/courses/handle-form-action" 
 class="mt-4">
-    <div>
-        <h3>Truyện tranh của tôi</h3>
-        <a href="/me/trash/truyen-tranh"> Thùng rác ({{deletedCount}})</a>
-
+    <div class="container">
+        <a class="btn btn-info mb-4" onclick="goBack()" role="button" style="color: white;">Quay lại</a>
+        <div class="ml-3">
+                <div class="row "><a> Kho truyện tranh</a></div>
+                <div class="row">
+                    <a href="/me/trash/truyen-tranh"> Thùng rác ({{deletedCount}})</a>
+                </div>
+        </div>             
         <div class="mt-4 d-flex align-items-center">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="checkbox-all">
-                <label class="custom-control-label" for="checkbox-all">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="checkbox-all">
+                    <label class="custom-control-label" for="checkbox-all">
                     Chọn tất cả</label>
-            </div>
-
-            <select class="custom-select custom-select-sm checkbox-select-all-options selectAllBox" 
-            name="action" required="required" >
-                <option value=""> Chọn hành động</option>
-                <option value="delete">Xóa</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-            <button class="btn btn-primary btn-sm disabled-btn " id="multifunctionButton" 
-            disabled="disabled" data-target="#delete-multi">Áp dụng</button>
+                </div>
+                <select class="custom-select custom-select-sm checkbox-select-all-options selectAllBox" name="action"
+                    required="required">
+                    <option value=""> Chọn hành động</option>
+                    <option value="delete">Xóa</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+                <button class="btn btn-primary btn-sm disabled-btn " id="multifunctionButton" disabled="disabled"
+                    data-target="#delete-multi">Áp dụng</button>
         </div>
-
     </div>
     
     <table class="table mt-4">
         <thead>
             <tr>
-                <th scope="col"  colspan="2">#</th>
-                <th scope="col">Tên truyện</th>
-                <th scope="col">Chapter</th>
-                <th scope="col">VideoID</th>
-                <th scope="col">Thời gian tạo</th>
+                <th scope="col" colspan="1">#</th>
+                <th scope="col" ></th>
+                <th scope="col" ></th>
+                <th scope="col" colspan="2">Tên truyện</th>  
+                <th scope="col" colspan="2">Kho Chapter</th>
+                <th scope="col" colspan="2">Thời gian tạo</th>
             </tr>
         </thead>
         <tbody>
-            {{#each courses}}
-            
+            {{#each courses}}      
             <tr>
                     <td>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="courseIds[]" 
-                            value="{{this._id}}">
+                            <input type="checkbox" class="form-check-input" name="chapterSlug[]" 
+                            value="{{this.slug}}">
                         </div>
                     </td>
                                 {{!-- mySum a + b --}}
                     <th scope="row">{{mySum @index 1}}</th>
+                    
+                    {{!--       ảnh         --}}
+                    {{#each thumbnail}}
+                    <td style="width: 30%;"> <img src="{{this.url}}"alt="img" width="30%" height="auto" > </td>
+                    {{/each}}
+                    
                     {{!--   tên truyện      --}}
-               
-                    <td> <a href="/courses/{{this.slug}}"> {{this.title}} </a> </td>
+                 
+                    <td colspan="2"> <a href="/courses/{{this.slug}}"> {{this.title}} </a> </td>
                     {{!--   chapter       --}}
-                    <td><select class="custom-select" id="inputGroupSelect01">
-                            <option selected>Chọn tập...</option>
-                            <option value="1">One</option>
-                        </select></td>
+                    <td> <a class="text-success" href="/me/stored/truyen-tranh/{{this.slug}}" >Chapter của {{this.title}}</a></td>
                     {{!--   videoId         --}}
-                    <td>{{this.videoId}}</td>
+                    <td></td>
                     {{!--   thời gian tạo   --}}
                     <td>{{this.createdAt}}</td>
                     {{!--   Sửa và xóa      --}}
                     <td>
-                        <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
-                        <a href="#" class="btn btn-link" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-course-modal">
+                        <a href="/courses/{{this.slug}}/edit" class="btn btn-link">Sửa</a>
+                        <a href="#" class="btn btn-link" data-toggle="modal" data-id="{{this.slug}}" data-target="#delete-course-modal">
                             Xóa</a>
                     </td>
             </tr>
 
             {{else}}
+
             <tr>
-                <td colspan="5" class="text-center"> Bạn chưa đăng truyện nào hết!!                   
+                <td colspan="7" class="text-center"> Bạn chưa đăng truyện nào hết!!                   
                 <a href="/courses/create">Đăng truyện tại đây</a>
                 </td>
             </tr>
 
             {{/each }}
+            
         </tbody>
     </table>
 </form>
@@ -109,12 +116,12 @@ class="mt-4">
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var courseId, isChecked;
+            var chapterSlug, isChecked;
             var hiddenForm = document.forms['hidden-form'];
             var btnDeleteCourse = document.getElementById('btn-delete-course');
             var btnDeleteMulti= document.getElementById('multifunctionButton');
             var checkboxAll = $('#checkbox-all'); 
-            var courseItemCheckbox = $('input[name="courseIds[]"]');
+            var courseItemCheckbox = $('input[name="chapterSlug[]"]');
             var disabledBtn = $('.disabled-btn');
             var containerForm = document.forms['container-form'];
             var selectAllBox = $('.selectAllBox');
@@ -125,15 +132,15 @@ class="mt-4">
             //show cái modal ra
             $('#delete-course-modal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget); 
-                //bấm vào button lưu id vào courseId từ button-data bên trên
-                courseId = button.data('id');
+                //bấm vào button lưu id vào chapterSlug từ button-data bên trên
+                chapterSlug = button.data('id');
             })
    
-            //Khi bấm vào nút xóa thì hiddenform action = "/courses/{{courseId}}/?_method=DELETE"
+            //Khi bấm vào nút xóa thì hiddenform action = "/courses/{{chapterSlug}}/?_method=DELETE"
             // sau khi chỉnh xong action thì hiddenform sẽ submit ra đường dẫn bên trên
             // từ phần route: thư mục index: /course --> delete / :id --> .destroy(controller)
             btnDeleteCourse.onclick = function() {
-                hiddenForm.action ='/courses/' + courseId + '?_method=DELETE';
+                hiddenForm.action ='/courses/' + chapterSlug + '?_method=DELETE';
                 hiddenForm.submit();
             }
 
@@ -153,7 +160,7 @@ class="mt-4">
             // checkbox is_changed
             courseItemCheckbox.change(function() {
                 //kiemtra xem length của Checkbox hiện tại có bằng chính nó k, cả 2 =thì true
-                var isCheckedAll = courseItemCheckbox.length === $('input[name="courseIds[]"]:checked').length;
+                var isCheckedAll = courseItemCheckbox.length === $('input[name="chapterSlug[]"]:checked').length;
                 if(isCheckedAll)
                     checkboxAll.prop('checked', true)
                 else
@@ -163,7 +170,7 @@ class="mt-4">
 
             // xóa nhiều > hiện modal box
             /* courseItemCheckbox.change(function() {
-                var isChecked = $('input[name="courseIds[]"]:checked').length;
+                var isChecked = $('input[name="chapterSlug[]"]:checked').length;
                 if (isChecked > 1 )
                 {
                     console.log('first if')
@@ -177,8 +184,8 @@ class="mt-4">
                                 e.preventDefault();
                                  $('#delete-course-modal').on('show.bs.modal', function (event) {
                                     var button = $(event.relatedTarget); 
-                                    //bấm vào button lưu id vào courseId từ button-data bên trên
-                                    courseId = button.data('id');
+                                    //bấm vào button lưu id vào chapterSlug từ button-data bên trên
+                                    chapterSlug = button.data('id');
                                 })
                             }
                             
@@ -189,13 +196,17 @@ class="mt-4">
 
             // hàm chuyển nút áp dụng thành enable
             function renderCheckAllSubmitBtn() {
-                var checkedCount =  $('input[name="courseIds[]"]:checked').length;
-                if(checkedCount > 0)
+                var checkedCount = $('input[name="chapterSlug[]"]:checked').length;
+                if (checkedCount > 0)
                     disabledBtn.attr('disabled', false); //gở disabled đi
                 else
                     disabledBtn.attr('disabled', true);  //thêm disabled vào               
             }
-    
+
             //console.log(selectAllBoxValue);
         });
+
+        function goBack() {
+                window.history.back();
+            }
     </script>

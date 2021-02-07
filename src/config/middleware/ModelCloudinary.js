@@ -7,38 +7,55 @@ cloudinary.config({
 });
 
 var self = module.exports = {
-    uploadSingle: (file) => {
+    uploadSingle: (file, folderPath) => {
         return new Promise(resolve => {
             cloudinary.uploader.upload(file, {
-                    folder: 'single'
+                    folder: 'home' + '/' + folderPath + '/' + 'thumbnail'
                 })
-                .then(result => {
-                    if (result) {
-                        const fs = require('fs')
+                .then(result => {  
+                    //console.log(result) 
+                    const fs = require('fs')
                         fs.unlinkSync(file)
                         resolve({
-                            url: result.secure_url
+                            url: result.secure_url,
+                            public_id: result.public_id,
+                            thumb1: self.reSizeImage(result.public_id, 200, 200),
+                            main: self.reSizeImage(result.public_id, 500, 500),
+                            thumb2: self.reSizeImage(result.public_id, 300, 300)
                         })
-                    }
+                        // res
+                        // .status(HttpStatus.OK)
+                        // .json({ message: 'Image deleted successfully' })
                 })
         })
     },
-    uploadMultiple: (file) => {
+    uploadMultiple: (file, folderPath) => {
         return new Promise(resolve => {
-            cloudinary.uploader.upload(file, {
-                    folder: 'home'
+            cloudinary.uploader.upload(file, {            
+                    folder: 'home' + '/' + folderPath
                 })
-                .then(result => {   
+                .then(result => {  
+                    console.log(result) 
                         // Xóa image lưu trong ổ cứng: src/uploadResults
                         const fs = require('fs')
                         fs.unlinkSync(file)
                         resolve({
                             url: result.secure_url,
-                            id: result.public_id,
+                            public_id: result.public_id,
                             thumb1: self.reSizeImage(result.public_id, 200, 200),
                             main: self.reSizeImage(result.public_id, 500, 500),
                             thumb2: self.reSizeImage(result.public_id, 300, 300)
                         })
+                })
+        })
+    },
+    deleteMultiple: (imagePublicId) => {
+        return new Promise(resolve => {
+            cloudinary.uploader.destroy(imagePublicId)
+                .then(result => { 
+                    // ['result': ok, , ,]
+                    console.log(result) 
+                        resolve(result)
                 })
         })
     },

@@ -1,0 +1,76 @@
+{{!-- main --}}
+<div class="mt-4"> 
+    <h1>countedChapter: {{mySum countedChapter 1}}</h1>
+    {{!-- row --}}
+    <div class="row">
+        {{!-- ảnh bìa (thumbnail) --}}
+        <div class="col-lg-3 ">
+            <img src="https://res.cloudinary.com/dwajvm53v/image/upload/v1612253974/home/hrb8iwjjzcmrj9b9igat.jpg"
+                alt="img" width="100%" height="auto">
+            <a class="btn btn-success mt-2 btn-block" href="#" role="button">Theo dõi</a>
+            <p class="text-center"> <small> Có 94 người đang theo dõi </small></p>
+        </div>  {{!-- /ảnh bìa (thumbnail) --}}
+
+        
+        <div class="col-lg-9">
+            {{#each (limit courses 1)}}
+                <div class="row">
+                    <a class="btn btn-info m-3" onclick="goBack()" role="button" style="color: white;">Quay lại</a>
+                </div>
+            {{/each}}
+            {{#each (limit courses 1)}}
+
+            {{!-- form --}}
+            <form action="/courses/{{this.slug}}/multiple-upload" method="POST" enctype="multipart/form-data">
+                {{/each}}
+                <div class="form-group">
+                    <label for="chapter"> Thêm Chapter</label>
+                    <input type="text" class="form-control" placeholder="VD: 1 hoặc 20.1" value="" id="chapter" name="chapter">
+                </div>
+                <div class="form-group">
+                    <label for="example-input-file"> </label>
+                    <input class="form-control-file border" type="file" name="many-files" multiple id="input-many-files">
+                </div>
+                <button type="submit" class="btn btn-primary">Tạo ngay</button>
+            </form> {{!-- /form --}}
+        </div> 
+
+    </div> {{!-- /row --}}
+    
+    {{!--  Search place     --}}
+    <form class="form-inline">
+        <input class="form-control m-2" type="search" placeholder="Search" aria-label="Search" style="width: 100%;">
+    </form> {{!--  /Search place     --}}
+
+    {{!--  Danh sách chương --}}
+    <div class="danh-sach-chuong">
+        <div class="row m-2">
+            <div class="col text-center"> Số chương </div>
+            <div class="col text-center"> Cập nhật </div>
+            <div class="col text-center"> Lượt xem </div>
+        </div>
+        {{#each courses}}
+            {{#if this.chapter}}
+                <div class="row m-2">
+                    <div class="col text-center">
+                        <a href="/courses/{{this.chaptername}}/{{this.chapter}}">
+                            {{replaceHyphenIntoSpace this.chapter}}
+                        </a>
+                    </div>
+                    <div class="col text-center">
+                        <p> 1 giờ trước </p>
+                    </div>
+                    <div class="col text-center">
+                        <p> 8,233 </p>
+                    </div>
+                </div>
+            {{/if}}
+        {{/each}}
+    </div> {{!--  /Danh sách chương --}}
+
+</div> {{!-- /main --}}
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>

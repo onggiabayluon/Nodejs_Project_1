@@ -5,24 +5,29 @@ const slug = require('mongoose-slug-generator');
 const mongooseDelete = require('mongoose-delete');
 
 const Course = new Schema({
-    title: { type: String },
-   
-    chaptername: { type: String},
-    chapter: { type: String, unique: true },
-    description: { type: String },
-    videoId: { type: String },
-    level: { type: String },
-    thumbnail: { type: String },
-    slug: { type: String, unique: true },
-    image: [
-      {
+  title: { type: String },
+  chaptername: { type: String },
+  chapter: { type: String, unique: true },
+  description: { type: String },
+  videoId: { type: String },
+  slug: { type: String },
+  thumbnail: [
+    {
       name: String,
       url: String,
+      publicId: { type: String },
+    }
+  ],
+  image: [
+    {
+      name: String,
+      url: String,
+      publicId: { type: String },
     }
   ]
-  }, {
-    timestamps: true,
-  });
+}, {
+  timestamps: true,
+});
 
   // Add plugin
   mongoose.plugin(slug);

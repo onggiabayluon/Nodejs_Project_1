@@ -15,8 +15,31 @@ class SiteController {
        
         //render courses vao homepage
         //2.
+        //test
+        
+        // const getDocument = async () => {
+        //     try {
+        //         //const coursetest = new Course({ title: 'test' });
+        //         //coursetest.save()
+               
+        //         const result = await Course              
+        //         .findOne({slug: 'test'})
+        //         .then(course => {
+        //             course.thumbnail.map(thumbnail => {
+        //                 console.log(thumbnail.publicId)
+        //             })
+                   
+        //         })
+                
+        //     } catch (error) {
+        //         console.log(error)
+        //     }
+        // }
+        // getDocument();
+
         Course.find({ chaptername: { $not: { $exists: true } } })
         .select('title description thumbnail slug')
+        
         //3. 
         .then(courses => { //4.           
             res.render('home', { 
@@ -26,7 +49,7 @@ class SiteController {
         .catch(error => next(error));
 
     }
-
+    
     // [GET] / search
     search(req, res) {
         res.render('search');

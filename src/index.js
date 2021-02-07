@@ -30,7 +30,7 @@ app.use(express.json());
 
 
 // HTTP logger
-// app.use(morgan('combined'));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 
 // method override
 app.use (methodOverride('_method'));
@@ -47,6 +47,11 @@ app.engine(
             limit: (arr, limit) => {
                 if (!Array.isArray(arr)) { return []; }
                 return arr.slice(0, limit);
+            },
+            replaceHyphenIntoSpace: (str) => {
+                str = str.toString().replace(/-/g, ' ');
+                return  str;// replace '-' -> space 
+               
             },
         }
     }),

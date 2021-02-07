@@ -11,7 +11,7 @@ module.exports =  function removeVietnameseTones(str){
       .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u')
       .replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y')
       .replace(/đ/gi, 'd')
-      .replace(/\s+/g, '-') 
+      .replace(/\s+/g, '-') // replace space -> '-'
       .replace(p, c => b.charAt(a.indexOf(c)))
       .replace(/&/g, '-and-')
       .replace(/[^\w\-]+/g, '')
