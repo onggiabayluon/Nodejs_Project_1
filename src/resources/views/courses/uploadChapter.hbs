@@ -13,16 +13,14 @@
 
         
         <div class="col-lg-9">
-            {{#each (limit courses 1)}}
                 <div class="row">
                     <a class="btn btn-info m-3" onclick="goBack()" role="button" style="color: white;">Quay lại</a>
                 </div>
-            {{/each}}
-            {{#each (limit courses 1)}}
 
+            {{#each chapters}}
             {{!-- form --}}
-            <form action="/courses/{{this.slug}}/multiple-upload" method="POST" enctype="multipart/form-data">
-                {{/each}}
+            <form action="/manga/{{this.slug}}/multiple-upload" method="POST" enctype="multipart/form-data">
+            {{/each}}
                 <div class="form-group">
                     <label for="chapter"> Thêm Chapter</label>
                     <input type="text" class="form-control" placeholder="VD: 1 hoặc 20.1" value="" id="chapter" name="chapter">
@@ -49,11 +47,11 @@
             <div class="col text-center"> Cập nhật </div>
             <div class="col text-center"> Lượt xem </div>
         </div>
-        {{#each courses}}
+        {{#each chapters}}
             {{#if this.chapter}}
                 <div class="row m-2">
                     <div class="col text-center">
-                        <a href="/courses/{{this.chaptername}}/{{this.chapter}}">
+                        <a href="/manga/{{this.chaptername}}/{{this.chapter}}">
                             {{replaceHyphenIntoSpace this.chapter}}
                         </a>
                     </div>

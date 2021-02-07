@@ -72,7 +72,7 @@ class UploadController {
                 })
 
             //res.send(`Your files has been uploaded.`)
-            res.status(201).redirect('/me/stored/truyen-tranh');
+            res.status(201).redirect('/me/stored/manga');
             
         } catch (error) {
             // Nếu có lỗi thì debug lỗi xem là gì ở đây
@@ -158,7 +158,7 @@ class UploadController {
                     })
                     
             //res.send(`Your files has been uploaded.`)
-            res.status(201).redirect('/me/stored/truyen-tranh');
+            res.status(201).redirect('/me/stored/manga');
             
         } catch (error) {
             // Nếu có lỗi thì debug lỗi xem là gì ở đây

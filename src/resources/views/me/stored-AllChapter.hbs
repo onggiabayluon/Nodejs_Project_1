@@ -1,11 +1,11 @@
-<form name="container-form" method="POST" action="/courses/handle-form-action" 
+<form name="container-form" method="POST" action="/manga/handle-form-action" 
 class="mt-4">
     <div class="container">
         <div class="row ml-3">
         <a class="btn btn-info mb-4 row" onclick="goBack()" role="button" style="color: white;">Quay lại</a>
         </div>
         
-        {{#each (limit courses 1)}}
+        {{#each (limit chapters 1)}}
             <h3 class="row">Tất cả chapter của {{this.chaptername}}</h3>
             
             <div class="row ">
@@ -45,8 +45,8 @@ class="mt-4">
             </tr>
         </thead>
         <tbody>
-            {{#each courses}}
-            {{#unless this.coursesTemp}}
+            {{#each chapters}}
+            {{!-- {{#unless this.noChapters}} --}}
             <tr>
                 <td>
                     <div class="form-check">
@@ -58,7 +58,7 @@ class="mt-4">
                 {{!--   tên truyện      --}}
                      
                 {{!--   chapter       --}}
-                <td><a href="/courses/{{this.chaptername}}/{{this.chapter}}">{{this.chapter}}</a></td>           
+                <td><a href="/manga/{{this.chaptername}}/{{this.chapter}}">{{this.chapter}}</a></td>           
                 {{!--   thời gian tạo   --}}
                 <td>{{this.createdAt}}</td>
                 {{!--   Sửa và xóa      --}}
@@ -71,10 +71,10 @@ class="mt-4">
             {{else}}
             <tr>
                 <td colspan="5" class="text-center"> Bạn chưa đăng chapter nào hết!!                   
-                <a href="/me/stored/truyen-tranh">Quay lại kho Truyện</a>
+                <a href="/me/stored/manga">Quay lại kho Truyện</a>
                 </td>
             </tr>
-            {{/unless}}
+            {{!-- {{/unless}} --}}
             {{/each }}
         </tbody>
     </table>
@@ -84,22 +84,22 @@ class="mt-4">
     <div id="delete-course-modal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Xóa Chapter truyện !!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Bạn chắc chắn muốn xóa chapter này ?? </p>
-                <p class="text-danger"> Không thể hoàn tác lại nếu xóa!!</p>
-            </div>
-            <div class="modal-footer">
-                <button id="btn-delete-course" type="button" class="btn btn-danger">
-                    Xóa bỏ</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    Hủy</button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa Chapter truyện !!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn chắc chắn muốn xóa chapter này ?? </p>
+                    <p class="text-danger"> Không thể hoàn tác lại nếu xóa!!</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-delete-course" type="button" class="btn btn-danger">
+                        Xóa bỏ</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Hủy</button>
+                </div>
             </div>
         </div>
     </div>
@@ -132,11 +132,11 @@ class="mt-4">
                 chapterSlug = button.data('id');
             })
    
-            //Khi bấm vào nút xóa thì hiddenform action = "/courses/{{chapterSlug}}/?_method=DELETE"
+            //Khi bấm vào nút xóa thì hiddenform action = "/manga/{{chapterSlug}}/?_method=DELETE"
             // sau khi chỉnh xong action thì hiddenform sẽ submit ra đường dẫn bên trên
             // từ phần route: thư mục index: /course --> delete / :id --> .destroy(controller)
             btnDeleteCourse.onclick = function() {
-                hiddenForm.action ='/courses/' + chapterSlug + '?_method=DELETE';
+                hiddenForm.action ='/manga/' + chapterSlug + '?_method=DELETE';
                 hiddenForm.submit();
             }
 

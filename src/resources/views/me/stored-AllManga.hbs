@@ -1,12 +1,12 @@
-<form name="container-form" method="POST" action="/courses/handle-form-action" 
+<form name="container-form" method="POST" action="/manga/handle-form-action" 
 class="mt-4">
     <div class="container">
         <a class="btn btn-info mb-4" onclick="goBack()" role="button" style="color: white;">Quay lại</a>
         <div class="ml-3">
                 <div class="row "><a> Kho truyện tranh</a></div>
-                <div class="row">
-                    <a href="/me/trash/truyen-tranh"> Thùng rác ({{deletedCount}})</a>
-                </div>
+                {{!-- <div class="row">
+                    <a href="/me/trash/manga"> Thùng rác ({{deletedCount}})</a>
+                </div> --}}
         </div>             
         <div class="mt-4 d-flex align-items-center">
                 <div class="custom-control custom-checkbox">
@@ -38,7 +38,7 @@ class="mt-4">
             </tr>
         </thead>
         <tbody>
-            {{#each courses}}      
+            {{#each mangas}}      
             <tr>
                     <td>
                         <div class="form-check">
@@ -51,21 +51,23 @@ class="mt-4">
                     
                     {{!--       ảnh         --}}
                     {{#each thumbnail}}
-                    <td style="width: 30%;"> <img src="{{this.url}}"alt="img" width="30%" height="auto" > </td>
+                    <td style="width: 30%;"> <img src="{{this.url}}"alt="Chưa có thumbnail" width="30%" height="auto" > </td>
+                    {{else}}
+                    <td style="width: 30%;"> <img src=""alt="Chưa có thumbnail" width="30%" height="auto" > </td>
                     {{/each}}
                     
                     {{!--   tên truyện      --}}
                  
-                    <td colspan="2"> <a href="/courses/{{this.slug}}"> {{this.title}} </a> </td>
+                    <td colspan="2"> <a href="/manga/{{this.slug}}"> {{this.title}} </a> </td>
                     {{!--   chapter       --}}
-                    <td> <a class="text-success" href="/me/stored/truyen-tranh/{{this.slug}}" >Chapter của {{this.title}}</a></td>
+                    <td> <a class="text-success" href="/me/stored/manga/{{this.slug}}" >Chapter của {{this.title}}</a></td>
                     {{!--   videoId         --}}
                     <td></td>
                     {{!--   thời gian tạo   --}}
                     <td>{{this.createdAt}}</td>
                     {{!--   Sửa và xóa      --}}
                     <td>
-                        <a href="/courses/{{this.slug}}/edit" class="btn btn-link">Sửa</a>
+                        <a href="/manga/{{this.slug}}/edit" class="btn btn-link">Sửa</a>
                         <a href="#" class="btn btn-link" data-toggle="modal" data-id="{{this.slug}}" data-target="#delete-course-modal">
                             Xóa</a>
                     </td>
@@ -75,7 +77,7 @@ class="mt-4">
 
             <tr>
                 <td colspan="7" class="text-center"> Bạn chưa đăng truyện nào hết!!                   
-                <a href="/courses/create">Đăng truyện tại đây</a>
+                <a href="/manga/create">Đăng truyện tại đây</a>
                 </td>
             </tr>
 
@@ -89,21 +91,23 @@ class="mt-4">
     <div id="delete-course-modal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Xóa khóa học !!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Bạn chắc chắn muốn xóa khóa học này ?</p>
-            </div>
-            <div class="modal-footer">
-                <button id="btn-delete-course" type="button" class="btn btn-danger">
-                    Xóa bỏ</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    Hủy</button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa truyện !!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+               <div class="modal-body">
+                    <p>Bạn chắc chắn muốn xóa truyện này ?? </p>
+                    <p class="text-warning">Hành động này sẽ xóa tất cả chapter liên quan </p>
+                    <p class="text-danger"> Không thể hoàn tác lại nếu xóa!!</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-delete-course" type="button" class="btn btn-danger">
+                        Xóa bỏ</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Hủy</button>
+                </div>
             </div>
         </div>
     </div>
@@ -136,11 +140,11 @@ class="mt-4">
                 chapterSlug = button.data('id');
             })
    
-            //Khi bấm vào nút xóa thì hiddenform action = "/courses/{{chapterSlug}}/?_method=DELETE"
+            //Khi bấm vào nút xóa thì hiddenform action = "/manga/{{chapterSlug}}/?_method=DELETE"
             // sau khi chỉnh xong action thì hiddenform sẽ submit ra đường dẫn bên trên
             // từ phần route: thư mục index: /course --> delete / :id --> .destroy(controller)
             btnDeleteCourse.onclick = function() {
-                hiddenForm.action ='/courses/' + chapterSlug + '?_method=DELETE';
+                hiddenForm.action ='/manga/' + chapterSlug + '?_method=DELETE';
                 hiddenForm.submit();
             }
 

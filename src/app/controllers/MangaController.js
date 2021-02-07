@@ -4,22 +4,25 @@ const cloudinary = require('../../config/middleware/ModelCloudinary')
 //cái dấu { } này để import từng phần tử bên trong
 const { singleMongooseToObject, multiMongooseToObject } = require('../../util/mongoose');
 const   removeVietnameseTones                           = require('../../config/middleware/VnameseToEng');
-class CourseController {
+class MangaController {
 
   // [GET] / courses / :slug
-  showAllChapter(req, res, next) {
+  showMangaDetails(req, res, next) {
     Course.find({slug: req.params.slug})
     .select('title slug createdAt updatedAt description thumbnail chaptername chapter ')
-    .then (page => {
-      if(page) {
+    .then (manga => {
+      if(manga) {
         Course.find({chaptername: req.params.slug})
         .select('title slug createdAt updatedAt description thumbnail chaptername chapter')
-        .then(courses => {  
-          if (courses) {
+        .then(chapters => {  
+          if (chapters) {
             // gộp array courses(chứa chapter) vào array page(chứa truyện)
             // gán lại kết quả vào courses
-            courses = page.concat(courses); 
-            res.status(200).render('courses/showAllChapter', { courses: multiMongooseToObject(courses) })
+            // courses = page.concat(courses); 
+            res.status(200).render('courses/showMangaDetails', { 
+              chapters: multiMongooseToObject(chapters),
+              manga: multiMongooseToObject(manga)
+            })
           } else {
             res
               .status(404)
@@ -43,7 +46,7 @@ class CourseController {
   }
 
    // [GET] / courses / :slug / :chapter-x
-  showSingleChapter(req, res, next) {
+  showChapterDetails(req, res, next) {
     //req.params.slug VD: courses/abc 
     //findOne: tìm đến 1 field trong mongodb ở đây là field slug
     //  courses/nodejs
@@ -51,7 +54,7 @@ class CourseController {
       .then(course => {
         //res.json(course)
         if (course) {
-        res.status(200).render('courses/showSingleChapter', { course: singleMongooseToObject(course) })
+        res.status(200).render('courses/showChapterDetails', { course: singleMongooseToObject(course) })
       
         } else {
           res
@@ -99,7 +102,7 @@ class CourseController {
         course.slug = slug + '-' + shortid.generate();
         course.save()
         .then(() => {
-          res.status(201).redirect('/me/stored/truyen-tranh');
+          res.status(201).redirect('/me/stored/manga');
         })
         .catch(err => {
           console.log(err);
@@ -115,7 +118,7 @@ class CourseController {
         //save xong rồi redirect qua trang chủ
         course.save()
         .then(() => {
-          res.status(201).redirect('/me/stored/truyen-tranh');
+          res.status(201).redirect('/me/stored/manga');
         })
         .catch(err => {
           console.log(err);
@@ -134,12 +137,12 @@ class CourseController {
      Promise.all([Course.find({ $or: [{ "chaptername": req.params.slug }, { "slug": req.params.slug }] })
        , Course.countDocuments({ chapter: { $exists: true } })])
        //.select('title slug createdAt updatedAt description thumbnail chaptername chapter')
-       .then(([courses, countedChapter]) => {
+       .then(([chapters, countedChapter]) => {
          //res.json( courses)
-         if (courses) {
+         if (chapters) {
            res.status(200).render('courses/uploadChapter', {
              countedChapter,
-             courses: multiMongooseToObject(courses)
+             chapters: multiMongooseToObject(chapters)
            })
          } else {
            res
@@ -159,8 +162,8 @@ class CourseController {
   edit(req, res, next) {
     //lấy dữ liệu để vào edit (Course này là biến trong model)
     Course.findOne({ slug: req.params.slug })
-      .then(courseEdit => res.status(200).render('courses/editTruyenTranh', {
-        courseEdit: singleMongooseToObject(courseEdit)
+      .then(manga => res.status(200).render('courses/editTruyenTranh', {
+        manga: singleMongooseToObject(manga)
       }))
       .catch(err => {
         console.log(err);
@@ -207,7 +210,7 @@ class CourseController {
               })
               Course.updateOne({ slug: req.params.slug }, req.body)
                 .then(() => {
-                  res.status(200).redirect('/me/stored/truyen-tranh');
+                  res.status(200).redirect('/me/stored/manga');
                 })
                 .catch(err => {
                   console.log(err);
@@ -225,7 +228,7 @@ class CourseController {
               })
               Course.updateOne({ slug: req.params.slug }, req.body)
                 .then(() => {
-                  res.status(200).redirect('/me/stored/truyen-tranh');
+                  res.status(200).redirect('/me/stored/manga');
                 })
                 .catch(err => {
                   console.log(err);
@@ -239,7 +242,7 @@ class CourseController {
           // Nếu title mới giống title cũ thì update bình thường, không update slug
           Course.updateOne({ slug: req.params.slug }, req.body)
           .then(() => {
-            res.status(200).redirect('/me/stored/truyen-tranh');
+            res.status(200).redirect('/me/stored/manga');
           })
           .catch(err => {
             console.log(err);
@@ -277,32 +280,96 @@ class CourseController {
   // [DELETE] / courses / :slug 
   async destroy(req, res, next) {
     // dùng delete của plugin sofl delete
-    await Course.findOne({ slug: req.params.slug }, function(err, page) {
+    await Course.findOne({ slug: req.params.slug }, function (err, page) {
       // Xem page có chưa chaptername ko: 
       // - nếu có nghĩa là delete chapter: delete thêm cả ảnh trên databse
       //res.json(page.chaptername)
-      if (page.chaptername) {
-        let res_promises =  page.image.map(image => new Promise((resolve, reject) => {
-          let imagePublicId = image.publicId
-          //res.json(imagePublicId)
-          cloudinary.deleteMultiple(imagePublicId).then(function (result) {
-            resolve(result);
-          });
-          Course.deleteOne({ slug: req.params.slug })
-            .then(() => {
-              res.status(200).redirect('back');
+      if (page.chaptername) // check có phải chapter không 
+      // -> chỉ delete chapters -> delete chapters mongodb
+      {
+        console.log("vào if 1")
+        let res_promises = page.image.map(image => new Promise((resolve, reject) => {
+            let imagePublicId = image.publicId
+            //res.json(imagePublicId)
+            cloudinary.deleteMultiple(imagePublicId)
+              .then(result => {
+                console.log("-- Xóa images trên cloudinary: ")
+              })
+              .catch((error) => {
+                console.error('> Error>', error);
+              })
+
+            Course.deleteOne({ slug: req.params.slug }) //slug của chapters
+              .then(() => {
+                console.log("-- Xóa images trên mongodb: ")
+                res.status(200).redirect('back');
+              })
+              .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                  error: err
+                });
+              })
+            .then(function (result) {
+              resolve(result);
             })
-            .catch(err => {
-              console.log(err);
-              res.status(500).json({
-                error: err
-              });
-            });
         }))
-      }
-      else {
-        Course.delete({ slug: req.params.slug })
+      } else {
+        // check có phải manga không 
+        // -> delete thumbnail cloudinary ->  delete all chapter images cloudinary 
+        // -> delete manga mongodb -> delete all chapters mongodb
+        console.log("vào if 2")
+        page.thumbnail.map(thumbnail => {
+          cloudinary.deleteMultiple(thumbnail.publicId)
+            .then(result => {
+              console.log("--1 Tiến hành Xóa thumbnail trên cloudinary: ")
+              console.log(result)
+            })
+            .catch((error) => {
+              console.error('> Error>', error);
+            })
+        });
+        Course.findOne({ chaptername: req.params.slug })
+          .then(chapters => {
+            if(!chapters) {
+              throw err;
+            }
+            chapters.image.map(image => new Promise((resolve, reject) => {
+              let imagePublicId = image.publicId
+              //console.log(imagePublicId)
+              cloudinary.deleteMultiple(imagePublicId)
+                .then(result => {
+                  console.log("--2 Tiến hành Xóa images trên cloudinary: ")
+                  console.log(result)
+                })
+                .catch((error) => {
+                  console.error('> Error>', error);
+                })
+
+              Course.deleteOne({ chaptername: req.params.slug })
+                .then(() => {
+                  console.log("--3 Tiến hành Xóa images trên mongodb: ")
+                  res.status(200);
+                })
+                .catch(err => {
+                  console.log(err);
+                  res.status(500).json({
+                    error: err
+                  });
+                })
+                .then(function (result) {
+                  resolve(result);
+                })
+            }))
+        })
+          .catch(err => {
+            console.log("--err không có chapters để xóa");
+            res.status(500);
+          })
+
+        Course.deleteOne({ slug: req.params.slug })
           .then(() => {
+            console.log("--4 Tiến hành Xóa manga trên mongodb: ")
             res.status(200).redirect('back');
           })
           .catch(err => {
@@ -312,7 +379,7 @@ class CourseController {
             });
           });
       }
-    })
+    });
   }
 
   // [DELETE] / courses / /force /:slug 
@@ -354,4 +421,4 @@ class CourseController {
 }
 
 //export (SiteController) thì lát require nhận được nó
-module.exports = new CourseController();
+module.exports = new MangaController();
