@@ -16,9 +16,6 @@ class MangaController {
         .select('title slug createdAt updatedAt description thumbnail chaptername chapter')
         .then(chapters => {  
           if (chapters) {
-            // gộp array courses(chứa chapter) vào array page(chứa truyện)
-            // gán lại kết quả vào courses
-            // courses = page.concat(courses); 
             res.status(200).render('courses/showMangaDetails', { 
               chapters: multiMongooseToObject(chapters),
               manga: multiMongooseToObject(manga)
@@ -288,12 +285,13 @@ class MangaController {
       // -> chỉ delete chapters -> delete chapters mongodb
       {
         console.log("vào if 1")
-        let res_promises = page.image.map(image => new Promise((resolve, reject) => {
+            page.image.map(image => {
             let imagePublicId = image.publicId
             //res.json(imagePublicId)
             cloudinary.deleteMultiple(imagePublicId)
               .then(result => {
                 console.log("-- Xóa images trên cloudinary: ")
+                console.log(result)
               })
               .catch((error) => {
                 console.error('> Error>', error);
@@ -310,75 +308,112 @@ class MangaController {
                   error: err
                 });
               })
-            .then(function (result) {
-              resolve(result);
-            })
-        }))
+
+        }) // end map image
       } else {
         // check có phải manga không 
         // -> delete thumbnail cloudinary ->  delete all chapter images cloudinary 
         // -> delete manga mongodb -> delete all chapters mongodb
         console.log("vào if 2")
-        page.thumbnail.map(thumbnail => {
-          cloudinary.deleteMultiple(thumbnail.publicId)
-            .then(result => {
-              console.log("--1 Tiến hành Xóa thumbnail trên cloudinary: ")
-              console.log(result)
-            })
-            .catch((error) => {
-              console.error('> Error>', error);
-            })
-        });
-        Course.findOne({ chaptername: req.params.slug })
-          .then(chapters => {
-            if(!chapters) {
-              throw err;
+        
+        function getPromise1_2() {
+          return new Promise((resolve, reject) => {
+            // do something async
+            /* -- First task -- */
+            console.log("--1 Tiến hành Xóa thumbnail trên cloudinary: ")
+            if (page.thumbnail.length !== 0) {
+              console.log("err")
+              page.thumbnail.map(thumbnail => {
+                cloudinary.deleteMultiple(thumbnail.publicId)
+                  .then(result => {
+                    console.log(result)
+                  })
+                  .catch((error) => {
+                    console.error('> Error>', error);
+                  })
+              }); /* -- end First task -- */
             }
-            chapters.image.map(image => new Promise((resolve, reject) => {
-              let imagePublicId = image.publicId
-              //console.log(imagePublicId)
-              cloudinary.deleteMultiple(imagePublicId)
-                .then(result => {
-                  console.log("--2 Tiến hành Xóa images trên cloudinary: ")
-                  console.log(result)
-                })
-                .catch((error) => {
-                  console.error('> Error>', error);
-                })
+            else {
+              console.log(' --K có thumbnail để xóa')
+            }
+           
+            console.log("--2 Tiến hành Xóa images trên cloudinary: ")
+            Course.find({ chaptername: req.params.slug })
+             .then(chapters => {
+              // console.log(chapters)
+              //  console.log(chapters[0].image)
+                if (chapters) { 
+                  chapters.map(chapter => {
+                    chapter.image.map(image => new Promise((resolve, reject) => {
+                      // res.json(image)
+                       let imagePublicId = image.publicId
+                       console.log(imagePublicId)
+                       cloudinary.deleteMultiple(imagePublicId)
+                         .then(result => {
+                           console.log(result)
+                         })
+                         .catch((error) => {
+                           console.error('> Error>', error);
+                         })
+                     }))
+                  })
+                }
+                else {
+                  console.log(' --K có images để xóa')
+                }
+             })
 
-              Course.deleteOne({ chaptername: req.params.slug })
-                .then(() => {
-                  console.log("--3 Tiến hành Xóa images trên mongodb: ")
-                  res.status(200);
-                })
-                .catch(err => {
-                  console.log(err);
-                  res.status(500).json({
-                    error: err
-                  });
-                })
-                .then(function (result) {
-                  resolve(result);
-                })
-            }))
-        })
-          .catch(err => {
-            console.log("--err không có chapters để xóa");
-            res.status(500);
-          })
-
-        Course.deleteOne({ slug: req.params.slug })
-          .then(() => {
-            console.log("--4 Tiến hành Xóa manga trên mongodb: ")
-            res.status(200).redirect('back');
-          })
-          .catch(err => {
-            console.log(err);
-            res.status(500).json({
-              error: err
-            });
+             //resolve bên dưới này nếu để bên trên là hàm chạy chưa hết
+             //resolve như return
+             .then(result => {
+              resolve(result)
+            })
           });
-      }
+        }
+    
+        function getPromise3() {
+         
+          return new Promise((resolve, reject) => {
+            // do something async
+            /* -- Third task -- */
+            console.log("--3 Tiến hành Xóa chapters trên mongodb: ")
+            Course.deleteMany({ chaptername: req.params.slug })
+              .then((result) => {
+                resolve(result);
+                res.status(200);
+              })
+              .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                  error: err
+                });
+              }); /* -- end Third task -- */
+          })
+        } // end promise 3
+        
+        function getPromise4() {
+          return new Promise((resolve, reject) => {
+            // do something async
+            /* -- Fourth task -- */
+            console.log("--4 Tiến hành Xóa manga trên mongodb: ")
+            Course.deleteOne({ slug: req.params.slug })
+              .then((result) => {
+                resolve(result);
+                res.status(200).redirect('back');
+              })
+              .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                  error: err
+                });
+              });   /* -- end Fourth task -- */
+          });
+        } 
+        
+        getPromise1_2().then(() => {
+          return Promise.all([getPromise3(), getPromise4()]);
+        }).then((args) => console.log(args)); // result from 2 and 3
+      } //end else
     });
   }
 

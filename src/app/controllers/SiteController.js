@@ -16,6 +16,44 @@ class SiteController {
         //render courses vao homepage
         //2.
         //test
+        // Course.findOne({ slug: 'toi-leo-thap-1-minh-test' }, function (err, page) {
+        //     const allTaskPromise = new Promise((resolve, reject) => {
+        //         resolve(page) //return kết quả promise là page
+        //     })
+        //     .then(function(result) { // (**)
+
+        //         console.log(result); // 1
+        //         return result;
+              
+        //       })
+        //     }) //find manga
+            //     //do task 1 va 2
+            //         Course.findOne({ slug: 'toi-leo-thap-1-minh-test-aWAROrQ1F' })
+            //         .select('title')
+            //         .then(result => {
+            //             console.log(`result 1 ${result}`)
+            //         })
+            //         .catch((error) => {
+            //             console.error('> Error>', error);
+            //         })
+            //          //do task 3 va 4
+            //     // .then(() => {
+            //         Course.findOne({ slug: 'toi-leo-thap-1-minh-test-aWAROrQ1F' })
+            //         .select('title')
+            //             .then(result => {
+            //                 console.log(`result 2 ${result}`)
+            //             })
+            //             .catch((error) => {
+            //                 console.error('> Error>', error);
+            //             })
+            //             console.log('4')
+                    
+            
+            // // })
+            
+      
+       
+           
         
         // const getDocument = async () => {
         //     try {
